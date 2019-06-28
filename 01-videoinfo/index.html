@@ -1,0 +1,30 @@
+<head>
+</head>
+<body>
+  <h1>Video Info</h1>
+  <form>
+    <div>
+      <label>Select a video</label>
+      <input type="file" accept="video/*" />
+    </div>
+    <button type="submit">Get Info</button>
+  </form>
+
+  <script>
+    const electron = require('electron');
+    const { ipcRenderer } = electron;
+
+    document.querySelector('form').addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const { path } = event.target[0].files[0];
+
+      ipcRenderer.send('video:getLength', path);
+      ipcRenderer.on('video:getLength', (event, length) => {
+        const h1 =document.createElement('h1');
+        h1.innerText = `Video is ${length} seconds`;
+        document.body.append(h1);
+      });
+    });
+  </script>
+</body>
